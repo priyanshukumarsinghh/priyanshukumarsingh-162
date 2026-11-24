@@ -245,11 +245,12 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)au.pause();
 let op=0;
 const ES=['songs/mehendi.mp3','songs/haldi.mp3','songs/sangeet.mp3','songs/wedding.mp3'],EC={};let cur=-1,ea=null,px=0;
 const pbs=$$('#c1 .cd').map(c=>{const b=document.createElement('span');b.className='pb';b.textContent='▶';c.append(b);return b});
-let SY=0;
+let SY=0,T0=0;
 function stopEv(res){if(ea){ea.pause();ea.currentTime=0}pbs.forEach(b=>b.textContent='▶');cur=-1;ea=null;if(res&&want)au.play().catch(()=>0)}
-function playEv(k){if(cur==k){stopEv(1);return}if(ea){ea.pause();ea.currentTime=0}pbs.forEach(b=>b.textContent='▶');au.pause();const a=EC[k]||(EC[k]=new Audio(ES[[0,1,2,1,3][k]]));a.currentTime=0;ea=a;cur=k;a.onended=()=>stopEv(1);SY=scrollY;a.play().then(()=>{pbs[k].textContent='❚❚'}).catch(()=>stopEv(1))}
+function playEv(k){if(cur==k){stopEv(1);return}if(ea){ea.pause();ea.currentTime=0}pbs.forEach(b=>b.textContent='▶');au.pause();const a=EC[k]||(EC[k]=new Audio(ES[[0,1,2,1,3][k]]));a.currentTime=0;ea=a;cur=k;a.onended=()=>stopEv(1);SY=scrollY;T0=Date.now();a.play().then(()=>{pbs[k].textContent='❚❚'}).catch(()=>stopEv(1))}
 $$('#c1 .cd').forEach((c,k)=>{c.addEventListener('pointerdown',e=>{px=e.clientX;c._c=c.style.zIndex=='9'});c.addEventListener('click',e=>{if(!c._c||Math.abs(e.clientX-px)>10)return;playEv(k)})});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&ea)stopEv(0)});
+addEventListener('scroll',()=>{if(!ea)return;if(Date.now()-T0<1000){SY=scrollY;return}if(Math.abs(scrollY-SY)>60)stopEv(1)},{passive:true});
 $('#c1').addEventListener('cardchange',e=>{if(op)playEv(e.detail)});
 function open(){if(op)return;op=1;playM();[0,1,2,3,4].forEach(k=>{const a=EC[k]||(EC[k]=new Audio(ES[[0,1,2,1,3][k]]));a.muted=true;a.play().then(()=>{if(ea!==a){a.pause();a.currentTime=0}a.muted=false}).catch(()=>{a.muted=false})});$('#tp').style.opacity=0;bw.classList.remove('fl');$('.cv').classList.add('o');
 setTimeout(()=>bw.style.transform='rotateX(0) rotateY(0) scale(3.2)',1200);
